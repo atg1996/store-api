@@ -1,3 +1,6 @@
+// exeecute this file to populate mongoDB.
+
+
 require('dotenv').config();
 
 const connectDb = require('./db/connect');
@@ -10,9 +13,11 @@ const start = async () => {
         await connectDb(process.env.MONGO_URI)
         await Product.deleteMany();
         await Product.create(productJson);
+        process.exit(0);
         console.log("populate.js file starts operating")
     }catch(error) {
         console.log(error);
+        process.exit(1);
     }
 }
 

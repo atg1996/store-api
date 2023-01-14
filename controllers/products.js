@@ -1,11 +1,47 @@
+
+const product = require("../models/product")
+
+
 const getAllProductsStatic = async (req,res) => {
-    //throw new Error("testing async error");
-    res.status(200).json({msg:"products testing route"})
+    const products = await product.find({featured:true, })
+    res.status(200).json({products, nbHits:products.length})
 }
 
 
 const getAllProducts = async (req,res) => {
-    res.status(200).json({msg:"products route"})
+    const {featured, company, name, sort, fields } = req.query;
+    const queryObject = new Object;
+
+    if  (featured) {
+        queryObject.featured = featured === "true" ? true:false
+    }
+
+    if  (company) {
+        queryObject.company = company;
+    }
+
+    if  (name) {
+        queryObject.name = {$regex: name, $options: "i"}
+    }
+
+    let result = product.find(queryObject)
+
+    if(sort) {
+        let sortList  = sort.split(',').join(' ')
+        result = result.sort(sortList)
+    }
+
+    if(fields) {
+        let filedsLIst = fields.split(',').join(' ');
+        result = result.select(filedsLIst);
+    }
+
+    else {
+        result = result.sort("createdAt");
+    }
+
+    const products = await result
+    res.status(200).json({products, length: products.length} )
 }
 
 module.exports = {
