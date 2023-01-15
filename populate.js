@@ -13,8 +13,8 @@ const start = async () => {
         await connectDb(process.env.MONGO_URI)
         await Product.deleteMany();
         await Product.create(productJson);
-        process.exit(0);
         console.log("populate.js file starts operating")
+        process.exit(0);
     }catch(error) {
         console.log(error);
         process.exit(1);
